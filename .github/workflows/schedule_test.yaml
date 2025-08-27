@@ -25,5 +25,5 @@ jobs:
         run: |
           echo "Running test in $GITHUB_EVENT_NAME"
           pytest
-          env:
+        env:
           TEST_ENV: "Shedule or Manual CI"
