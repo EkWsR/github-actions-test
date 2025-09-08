@@ -1,0 +1,22 @@
+name: Main Workflow
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  call-test-lint:
+    uses: ./.github/workflows/reusable-test-lint.yml
+  check-pylint-score:
+    runs-on: ubuntu-latest
+    needs: call-test-lint
+    steps:
+      - name: Check pylint score
+        run: |
+          echo "Pylint score: ${{ needs.call-test-lint.outputs.pylint-score }}"
+          if (( $(echo "${{ needs.call-test-lint.outputs.pylint-score }} < 8" | bc -l) )); then
+            echo "Pylint score too low!"
+            exit 1
+          else
+            echo "Pylint score is acceptable."
+          fi

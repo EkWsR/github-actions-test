@@ -1,0 +1,35 @@
+name: Reusable Test and Lint
+
+on:
+  workflow_call:
+    outputs:
+      pylint-score:
+        description: "Pylint score for the codebase"
+        value: ${{ jobs.test-and-lint.outputs.pylint-score }}
+
+jobs:
+  test-and-lint:
+    runs-on: ubuntu-latest
+    outputs:
+      pylint-score: ${{ steps.lint.outputs.score }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: pip install pytest pylint
+      - name: Run tests
+        run: pytest
+      - name: Run linting
+        id: lint
+        run: |
+          pylint_score=$(pylint **/*.py --exit-zero | grep -oP 'Your code has been rated at \K[\d.]+')
+          echo "score=$pylint_score" >> $GITHUB_OUTPUT
+      - name: Upload lint report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: lint-report.txt
