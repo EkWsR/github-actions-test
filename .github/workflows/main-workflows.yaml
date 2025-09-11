@@ -6,7 +6,7 @@ on:
 
 jobs:
   call-test-lint:
-    uses: ./.github/workflows/reusable-test-lint.yml
+    uses: ./.github/workflows/reusable-test-lint.yaml
   check-pylint-score:
     runs-on: ubuntu-latest
     needs: call-test-lint
